@@ -10,6 +10,10 @@ Here's a sample with default settings:
 
 ![screenshot](https://user-images.githubusercontent.com/25377830/34966478-1b0da6be-fa43-11e7-97d2-376d92cccc40.png)
 
+Here's one with the "softer" settings.
+
+![softer screenshot](https://user-images.githubusercontent.com/25377830/34967999-ab8331a0-fa4d-11e7-8972-848b924a70e2.png)
+
 ### What is it
 
 There are two things here.
@@ -124,7 +128,7 @@ const float g =  0.9200;
 And another. Softer.
 
 ```c
-const float Br = 0.0010;
+const float Br = 0.0005;
 const float Bm = 0.0003;
 const float g =  0.9200;
 ```
