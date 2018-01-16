@@ -121,6 +121,14 @@ const float Bm = 0.0009;
 const float g =  0.9200;
 ```
 
+And another. Softer.
+
+```c
+const float Br = 0.0010;
+const float Bm = 0.0003;
+const float g =  0.9200;
+```
+
 ### License?
 
 Please ask me about it and I'll license it to you :)
