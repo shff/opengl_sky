@@ -22,31 +22,58 @@ There are two things here.
 
 This thing uses a Mie + Rayleigh scattering function for the sky. Well, almost, it is too heavy so I fitted it to a makeshift math function until it was fast enough.
 
+##### The theory
+
+What is Mie + Rayleigh scattering, do you ask? Well, for our purposes, it's a complex formula used to calculate the color of the sky.
+
+Here's some references:
+
+ - [Wikipedia](https://en.wikipedia.org/wiki/Mie_scattering)
+ - [A nice explanation](http://apollo.lsc.vsc.edu/classes/met130/notes/chapter19/rayleigh.html)
+ - [Scratchapixel Tutorial](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/simulating-sky/simulating-colors-of-the-sky)
+ - [A deep dive into theory with code](https://www.alanzucconi.com/2017/10/10/atmospheric-scattering-3/)
+ - [More theory!](http://hyperphysics.phy-astr.gsu.edu/hbase/atmos/blusky.html)
+ - [A nifty video](https://www.youtube.com/watch?v=twSg2zbjjnA)
+
+##### The implementation
+
 Here's the mu:
 
 ```c
 float mu = dot(normalize(pos), normalize(fsun));
 ```
 
-Here's the extinction. I don't remember how I came up with that. Sorry! :(
+And here's Rayleigh:
+
+```c
+vec3 rayleigh = 3.0 / (8.0 * 3.14) * (1.0 + mu * mu)
+```
+
+And Mie:
+
+```c
+vec3 mie = (Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5)) / (Br + Bm)
+```
+
+The extinction is the hard part. I did that on an old Macbook, so I didn't have a lot of processing power. The traditional way of calculating that is using integration. Some imeplementations use 16, 32 or even more steps, and that's VERY HARD for an integrated graphics card.
+
+The thing I did was that I plotted the graph and then came up with a formula that was faster than all the iterations but was still in the ballpark.
+
+So basic curve fitting. 😅😅😅
+
+I don't remember how I came up with the formula! Sorry! :(
 
 ```c
 vec3 extinction = mix(exp(-exp(-((pos.y + fsun.y * 4.0) * (exp(-pos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-pos.y * 16.0) + 0.1) * Kr / Br) * exp(-pos.y * exp(-pos.y * 8.0 ) * 4.0) * exp(-pos.y * 2.0) * 4.0, vec3(1.0 - exp(fsun.y)) * 0.2, -fsun.y * 0.2 + 0.5);
 ```
 
-And here's Rayleigh:
+That's it. Multiply Mie and Rayleigh with the extinction and you have your sky.
 
-```
-3.0 / (8.0 * 3.14) * (1.0 + mu * mu)
-```
-
-Mie:
-
-```
-(Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5)) / (Br + Bm)
+```c
+color.rgb = rayleigh * mie * extinction;
 ```
 
-That's it. Multiply those two with the extinction and you have your sky.
+Here's an implementation that is probably better than mine: https://github.com/wwwtyro/glsl-atmosphere/
 
 #### Clouds
 
@@ -101,7 +128,7 @@ renderEntity(s.entities[i], p, v, (float)glfwGetTime() * 0.2f - 0.0f);
 
 #### Nitrogen Color 🏞
 
-That's not exactly the color of nitrogen, but let's pretend it is!
+That's not exactly the color of nitrogen, but it is actually related to that.
 
 ```c
 const vec3 nitrogen = vec3(0.650, 0.570, 0.475);
@@ -125,7 +152,7 @@ const float Bm = 0.0009;
 const float g =  0.9200;
 ```
 
-And another. Softer.
+And another favorite. It is a softer setting.
 
 ```c
 const float Br = 0.0005;
@@ -135,4 +162,4 @@ const float g =  0.9200;
 
 ### License?
 
-Please ask me about it and I'll license it to you :)
+Please ask me about it and I'll license it to you. :)
