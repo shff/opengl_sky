@@ -159,7 +159,3 @@ const float Br = 0.0005;
 const float Bm = 0.0003;
 const float g =  0.9200;
 ```
-
-### License?
-
-Please ask me about it and I'll license it to you. :)
