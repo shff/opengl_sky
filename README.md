@@ -4,6 +4,8 @@ This is a 100% procedural sky + clouds renderer. It calculates everything inside
 
 I can run it without glitches in a cheap 2011 Macbook Air.
 
+*Hello stargazers interested in atmosphere rendering, here's two nice projects you could like: [benanders/Hosek-Wilkie](https://github.com/benanders/Hosek-Wilkie) and [wwwtyro/glsl-atmosphere](https://github.com/wwwtyro/glsl-atmosphere/)*
+
 ### What does it look like?
 
 Here's a sample with default settings:
@@ -72,8 +74,6 @@ That's it. Multiply Mie and Rayleigh with the extinction and you have your sky.
 ```c
 color.rgb = rayleigh * mie * extinction;
 ```
-
-Here's an implementation that is probably better than mine: https://github.com/wwwtyro/glsl-atmosphere/
 
 #### Clouds
 
