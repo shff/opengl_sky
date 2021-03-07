@@ -59,14 +59,19 @@ vec3 mie = (Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g 
 
 The extinction is the hard part. I did that on an old Macbook, so I didn't have a lot of processing power. The traditional way of calculating that is using integration. Some imeplementations use 16, 32 or even more steps, and that's VERY HARD for an integrated graphics card.
 
-The thing I did was that I plotted the graph and then came up with a formula that was faster than all the iterations but was still in the ballpark.
+What I did was plotting the graph and then coming up with a formula that was faster than all the iterations, but was still in the ballpark.
 
-So basic curve fitting. 😅😅😅
-
-I don't remember how I came up with the formula! Sorry! :(
+Basic curve fitting. I used a mix of empirical observation and a some Matlab.
 
 ```c
-vec3 extinction = mix(exp(-exp(-((pos.y + fsun.y * 4.0) * (exp(-pos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-pos.y * 16.0) + 0.1) * Kr / Br) * exp(-pos.y * exp(-pos.y * 8.0 ) * 4.0) * exp(-pos.y * 2.0) * 4.0, vec3(1.0 - exp(fsun.y)) * 0.2, -fsun.y * 0.2 + 0.5);
+vec3 day_extinction = exp(-exp(-((pos.y + fsun.y * 4.0) * (exp(-pos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-pos.y * 16.0) + 0.1) * Kr / Br) * exp(-pos.y * exp(-pos.y * 8.0 ) * 4.0) * exp(-pos.y * 2.0) * 4.0;
+```
+
+Another thing I wanted was a blue-ish extinction value for nights. This is not in the original formula.
+
+```c
+vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
+vec3 extinction = mix(day_extinction, night_extinction, -fsun.y * 0.2 + 0.5);
 ```
 
 That's it. Multiply Mie and Rayleigh with the extinction and you have your sky.
@@ -90,16 +95,12 @@ Cirrus: https://upload.wikimedia.org/wikipedia/commons/9/94/Cirrus_clouds_mar08.
 ### Compiling
 
  - Install `glfw3` (`brew install glfw3` if you're on a Mac).
- - Edit `Makefile` and change the path to `glfw/includes` and `glfw/lib/libglfw3.a` (you can use `libglfw.dylib` here if you don't have `libglfw3.a`).
+ - Edit `Makefile` and change the path to `glfw/includes` and `glfw/lib/libglfw3.a` (you can use `-lglfw` or `-lglfw3` here if you only have a `libglfw3.dylib` instead of a `libglfw3.a`).
  - Run `make`. It should work.
- 
-I didn't put a lot of time into it, so 
 
 ### Where are the settings?
 
 They're scattered around the code.
-
-Sorry. Ha!
 
 #### Cirrus Fluffiness ☁️
 
