@@ -107,7 +107,10 @@ const char* skyFragShader = GLSL(
     float mu = dot(normalize(pos), normalize(fsun));
     float rayleigh = 3.0 / (8.0 * 3.14) * (1.0 + mu * mu);
     vec3 mie = (Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5)) / (Br + Bm);
-    vec3 extinction = mix(exp(-exp(-((pos.y + fsun.y * 4.0) * (exp(-pos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-pos.y * 16.0) + 0.1) * Kr / Br) * exp(-pos.y * exp(-pos.y * 8.0 ) * 4.0) * exp(-pos.y * 2.0) * 4.0, vec3(1.0 - exp(fsun.y)) * 0.2, -fsun.y * 0.2 + 0.5);
+
+    vec3 day_extinction = exp(-exp(-((pos.y + fsun.y * 4.0) * (exp(-pos.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-pos.y * 16.0) + 0.1) * Kr / Br) * exp(-pos.y * exp(-pos.y * 8.0 ) * 4.0) * exp(-pos.y * 2.0) * 4.0;
+    vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
+    vec3 extinction = mix(day_extinction, night_extinction, -fsun.y * 0.2 + 0.5);
     color.rgb = rayleigh * mie * extinction;
 
     // Cirrus Clouds
