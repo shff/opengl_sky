@@ -423,13 +423,13 @@ scene makeScene()
   return s;
 }
 
-void renderScene(scene s, int w, int h)
+void renderScene(scene s, int w, int h, float time)
 {
   matrix p = getProjectionMatrix(w, h);
   matrix v = getViewMatrix(s.state.x, s.state.y, s.state.z, s.state.r, s.state.r2);
   for (unsigned int i = 0; i < s.entity_count; i++)
     if (!s.entities[i].fb)
-      renderEntity(s.entities[i], p, v, (float)glfwGetTime() * 0.2f - 0.0f);
+      renderEntity(s.entities[i], p, v, time);
   for (unsigned int i = 0; i < s.entity_count; i++)
     if (s.entities[i].fb)
       renderEntity(s.entities[i], p, v, 0.0f);
@@ -470,8 +470,8 @@ int main()
     // Move Cursor
     double mx, my;
     glfwGetCursorPos(window, &mx, &my);
-    s.state.r -= (mx - s.state.px) * 0.01f;
-    s.state.r2 -= (my - s.state.py) * 0.01f;
+    s.state.r -= (float)(mx - s.state.px) * 0.01f;
+    s.state.r2 -= (float)(my - s.state.py) * 0.01f;
     s.state.px = (float)mx;
     s.state.py = (float)my;
 
@@ -480,7 +480,8 @@ int main()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the Scene
-    renderScene(s, 800, 600);
+    float time = (float)glfwGetTime() * 0.2f - 0.0f;
+    renderScene(s, 800, 600, time);
 
     // Swap
     glfwSwapBuffers(window);
