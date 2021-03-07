@@ -111,7 +111,7 @@ for (int i = 0; i < 3; i++)
 
 #### Amount of clouds 🌥
 
-The bigger the number the more there are. From zero to one, I think. Play around with it.
+The bigger the number the more there are. From zero to one, although you can go higher. Play around with it.
 
 ```
 uniform float cirrus = 0.9;
@@ -123,7 +123,7 @@ uniform float cumulus = 0.2;
 The `0.2f` below is the speed ratio. Crank it to `5.0f` if you're in a hurry to see the full cycle!
 
 ```c
-renderEntity(s.entities[i], p, v, (float)glfwGetTime() * 0.2f - 0.0f);
+float time = (float)glfwGetTime() * 0.2f - 0.0f;
 ```
 
 #### Nitrogen Color 🏞
