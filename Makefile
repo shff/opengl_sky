@@ -6,6 +6,9 @@ all: main test
 main: main.c
 	@clang $(CFLAGS) $(CINCS) $^ -o $@
 
+mainmm: main.mm
+	@clang -fmodules -fcxx-modules -std=c++17 -lc++ -Wno-deprecated-declarations main.mm -o main && ./main
+
 test:
 	@du -h ./main
 	@./main
