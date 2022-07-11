@@ -120,9 +120,9 @@ const char* skyFragShader = GLSL(
     color.rgb = mix(color.rgb, extinction * 4.0, density * max(pos.y, 0.0));
 
     // Cumulus Clouds
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 10; i++)
     {
-      float density = smoothstep(1.0 - cumulus, 1.0, fbm((0.7 + float(i) * 0.005) * pos.xyz / pos.y + time * 0.3));
+      float density = smoothstep(1.0 - cumulus, 1.0, fbm((0.7 + float(i) * 0.01) * pos.xyz / pos.y + time * 0.3));
       color.rgb = mix(color.rgb, extinction * density * 5.0, min(density, 1.0) * max(pos.y, 0.0));
     }
 
@@ -536,6 +536,8 @@ int main(int argc, char **argv)
           case NSEventTypeKeyDown:
             if ([event modifierFlags] & NSEventModifierFlagCommand)
               [app sendEvent:event];
+            else if ([[event charactersIgnoringModifiers] isEqual:@"q"])
+              running = 0;
             else
               [keysDown addObject:[event charactersIgnoringModifiers]];
             break;
